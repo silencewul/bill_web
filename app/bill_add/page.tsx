@@ -13,20 +13,18 @@ export default function AddBill() {
     const [selectCate,setSelectCate] = useState(1);
     const [money,setMoney] = useState(0);
     const [note,setNote] = useState('');
-    console.log(value.toLocaleDateString().replaceAll('/','-'))
-    console.log(money)
     async function submit() {
         let data = {
             'kind':kind,
-            'cate':selectCate,
-            'money':money,
+            'category_id':selectCate,
+            'money':parseFloat(money.toString()),
             'note':note,
             'date':value.toLocaleDateString().replaceAll('/','-')
         }
         try {
-            const response = await axios.post('http://127.0.0.1:3001/api/login', JSON.stringify(data));
+            const response = await axios.post('http://127.0.0.1:3001/api/bill/add', JSON.stringify(data));
             if (response.data.code == 1) {
-              alert('登录失败')
+              alert('添加失败')
             } else if (response.data.code == 0) {
               router.push('/')
             }

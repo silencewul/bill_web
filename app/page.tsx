@@ -11,7 +11,7 @@ export default function Index() {
         <div className="mx-auto max-w-xs px-8">
           <p className="text-base font-semibold text-gray-600">今日收支</p>
           <p className="mt-6 flex items-baseline justify-center gap-x-2">
-            <span className="text-5xl font-bold tracking-tight text-red-500">+349</span>
+            <span className="text-5xl font-bold tracking-tight text-red-500">+95</span>
             <span className="text-sm font-semibold leading-6 tracking-wide text-gray-600">元</span>
           </p>
           <p className="mt-4 text-xs leading-5 text-gray-600">
