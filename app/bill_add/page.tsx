@@ -2,14 +2,39 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-export default function AddBill() {
+import axios from "axios";
+import {useRouter} from "next/navigation";
 
+export default function AddBill() {
+    const router = useRouter()
     const [value, onChange] = useState(new Date());
-    const [cate,setCate] = useState([]);
     const [kind,setKind] = useState(1);
+    const [cate,setCate] = useState([]);
     const [selectCate,setSelectCate] = useState(1);
     const [money,setMoney] = useState(0);
     const [note,setNote] = useState('');
+    console.log(value.toLocaleDateString().replaceAll('/','-'))
+    console.log(money)
+    async function submit() {
+        let data = {
+            'kind':kind,
+            'cate':selectCate,
+            'money':money,
+            'note':note,
+            'date':value.toLocaleDateString().replaceAll('/','-')
+        }
+        try {
+            const response = await axios.post('http://127.0.0.1:3001/api/login', JSON.stringify(data));
+            if (response.data.code == 1) {
+              alert('登录失败')
+            } else if (response.data.code == 0) {
+              router.push('/')
+            }
+            // 处理响应逻辑...
+          } catch (error) {
+            // 处理错误逻辑...
+          }
+    }
 
   return <div className="lg:flex sm:items-center sm:justify-center">
     <div className="mt-5 flex lg:ml-4 lg:mt-0">
@@ -25,7 +50,7 @@ export default function AddBill() {
 
       <span className="mx-auto sm:block">
       <button type="button" onClick={() => setKind(2) }
-              className={(kind == 2 ? "bg-green-300":"bg-white")+" inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"}>
+              className={(kind == 2 ? "bg-green-300":"bg-white")+" inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300"}>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
   <path strokeLinecap="round" strokeLinejoin="round" d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
 </svg>
@@ -101,7 +126,7 @@ export default function AddBill() {
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <span className="text-gray-500 sm:text-sm">￥</span>
               </div>
-              <input type="number" name="money" id="money" required
+              <input type="number" name="money" id="money" required onChange={e => setMoney(e.target.value)} 
                      className="block w-full rounded-md border-0 py-1.5 pl-7 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                      placeholder="0.00" />
           </div>
@@ -109,7 +134,7 @@ export default function AddBill() {
       <div className="mt-3 pt-5 px-2 justify-center">
           <label htmlFor="price" className="pt-5 px-2 tracking-tight text-gray-900">备注</label>
           <div className="relative mt-2 rounded-md shadow-sm">
-              <input type="text" name="note" id="note"
+              <input type="text" name="note" id="note" onChange={e => setNote(e.target.value)} 
                      className="block w-full rounded-md border-0 py-1.5 pl-3 pr-20 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                      placeholder="" />
           </div>
@@ -126,7 +151,7 @@ export default function AddBill() {
           <Calendar onChange={onChange} value={value} />
       </div>
 
-    <a href="#"
+    <a href="#" onClick={submit}
            className="fixed inset-x-0 bottom-1 block w-full rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">添加</a>
   </div>
 
