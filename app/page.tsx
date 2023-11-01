@@ -1,8 +1,24 @@
 'use client'
+import axios from "axios";
 import Link from "next/link";
-import Cookies from "js-cookie";
+import {useState} from "react";
 
 export default function Index() {
+  const [billList,setBillList] = useState([])
+  //获取用户账单列表
+  async function getBills() {
+    try {
+      const response = await axios.get('http://127.0.0.1:3001/api/bills12');
+      if (response.data.code == 1) {
+        alert('获取失败')
+      } else if (response.data.code == 0) {
+          setBillList(response.data.data)
+      }
+      // 处理响应逻辑...
+    } catch (error) {
+      // 处理错误逻辑...
+    }
+  }
   return <div className="lg:flex sm:items-center sm:justify-center">
     <h2 className="top-0.5 justify-centerr items-center mx-auto text-center pt-2"></h2>
     <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
