@@ -1,24 +1,24 @@
 'use client'
 import axios from "axios";
 import Link from "next/link";
-import {useState} from "react";
+import { useEffect, useState } from 'react'
 
 export default function Index() {
   const [billList,setBillList] = useState([])
-  //获取用户账单列表
-  async function getBills() {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:3001/api/bills12');
-      if (response.data.code == 1) {
-        alert('获取失败')
-      } else if (response.data.code == 0) {
-          setBillList(response.data.data)
-      }
-      // 处理响应逻辑...
+      const response = await axios.get('http://127.0.0.1:3001/api/bills');
+      const data = response.data;
+      setBillList(data.data);
     } catch (error) {
-      // 处理错误逻辑...
+      console.error('请求错误:', error);
     }
-  }
+  };
+
   return <div className="lg:flex sm:items-center sm:justify-center">
     <h2 className="top-0.5 justify-centerr items-center mx-auto text-center pt-2"></h2>
     <div className="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
@@ -37,12 +37,13 @@ export default function Index() {
       </div>
     </div>
     <p className="pt-2 px-2 tracking-tight text-gray-900">收支明细</p>
-    <div className="mt-2 px-8">
+    <div className="mt-2 px-8 mb-20">
       <div className="flow-root">
         <ul role="list" className="-my-3 divide-y divide-gray-200">
-          <li className="flex py-6">
+          {billList.map((bill) => (
+            <li className="flex py-6">
             <div className="h-16 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-              <svg className="h-16 w-24 flex-shrink-0 text-green-200 group-hover:text-gray-500" fill="none"
+              <svg className={(bill.kind==1?"text-red-300":"text-green-200")+" h-16 w-24 flex-shrink-0 group-hover:text-gray-500"} fill="none"
                    viewBox="0 0 24 24"  stroke="currentColor" aria-hidden="true">
                 <path
                       d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
@@ -54,12 +55,13 @@ export default function Index() {
                   <h3>
                     <p>早餐</p>
                   </h3>
-                  <p className="ml-4 text-green-300">-5.00元</p>
+                  
+                  <p className="ml-4 text-green-300"><span>{bill.kind == 1?"+":"-"}</span>{bill.money}元</p>
                 </div>
                 <p className="mt-1 text-sm text-gray-500">2023-10-28</p>
               </div>
               <div className="flex flex-1 items-end  text-sm">
-                <p className="pl-0 text-sm text-gray-500">早上吃了豆浆油条</p>
+                <p className="pl-0 text-sm text-gray-500">{bill.note}</p>
                 <div className="flex ml-auto justify-end">
                   <button type="button"
                           className="font-medium text-sm text-indigo-600 hover:text-indigo-500">删除
@@ -67,7 +69,9 @@ export default function Index() {
                 </div>
               </div>
             </div>
-          </li>
+          </li>)
+            )}
+          
           <li className="flex py-6">
             <div className="h-16 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-16 w-24 flex-shrink-0 text-red-300 group-hover:text-gray-500">
