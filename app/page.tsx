@@ -58,7 +58,7 @@ export default function Index() {
                   
                   <p className="ml-4 text-green-300"><span>{bill.kind == 1?"+":"-"}</span>{bill.money}元</p>
                 </div>
-                <p className="mt-1 text-sm text-gray-500">2023-10-28</p>
+                <p className="mt-1 text-sm text-gray-500">{bill.date}</p>
               </div>
               <div className="flex flex-1 items-end  text-sm">
                 <p className="pl-0 text-sm text-gray-500">{bill.note}</p>

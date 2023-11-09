@@ -1,9 +1,9 @@
 'use client';
-import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import axios from "axios";
 import {useRouter} from "next/navigation";
+import { useEffect, useState } from 'react'
 
 export default function AddBill() {
     const router = useRouter()
@@ -13,6 +13,22 @@ export default function AddBill() {
     const [selectCate,setSelectCate] = useState(1);
     const [money,setMoney] = useState(0);
     const [note,setNote] = useState('');
+
+
+    useEffect(() => {
+        fetchData();
+      }, []);
+
+    const fetchData = async () => {
+    try {
+        const response = await axios.get('http://127.0.0.1:3001/api/category');
+        const data = response.data;
+        setCate(data.data);
+    } catch (error) {
+        console.error('请求错误:', error);
+    }
+    };
+
     async function submit() {
         let data = {
             'kind':kind,
